@@ -1,0 +1,74 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<h1 class="title">
+	Moje kontakty
+</h1>
+<table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+	<thead>
+    <tr>
+      <th>Imie</th>
+      <th>Nazwisko</th>
+      <th>Telefon(y)</th>
+      <th>E-mail(e)</th>
+      <th>Operacje</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for person in people %}
+    <tr>
+      <td>{{ person.first_name }}</td>
+      <td>{{ person.last_name }}</td>
+      <td>
+        {% for p in person.phone_number.all %}
+          {{ p.phone_number }}</br>
+        {% endfor %}
+      </td>
+      <td>
+        {% for e in person.email_address.all %}
+          {{ e.email_address }}</br>
+        {% endfor %}
+      </td>
+      <td>
+        <div class="buttons has-addons">
+          <a class="button list-button is-success is-light is-small" href="{% url 'person-update-function' person.pk %}">
+            <span class="icon">
+              <i class="far fa-edit"></i>
+            </span>
+          </a>
+          <form method="post" action="{% url 'person-delete-function' person.pk %}" class="list-button">
+            {% csrf_token %}
+            <button type="button" class="button is-white is-light is-small delete-button">
+              <span class="icon">
+                <i class="far fa-trash-alt"></i>
+              </span>
+            </button>
+          </form>
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
+
+{% block script %}
+
+{{ block.super }}
+
+<script>
+
+  $('.delete-button').on('click', function(e){
+    if(!confirm("Czy na pewno chcesz usunąć ten kontakt?")){
+      e.preventDefault();
+    }else{
+      // console.log($(this).parent());
+      $(this).parent().submit();
+    }    
+  });
+
+</script>
+
+{% endblock %}

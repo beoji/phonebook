@@ -1,0 +1,35 @@
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbar-menu">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+
+    <div id="navbar-menu" class="navbar-menu">
+        <div class="navbar-start">
+            <a href="{% url 'person-list' %}" class="navbar-item">Lista</a>
+            <a href="{% url 'person-create' %}" class="navbar-item">Utwórz nowy</a>
+        </div>
+
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <div class="buttons">
+                    {% if request.user.is_authenticated %}
+                        <a href="{% url 'logout' %}" class="button is-light">
+                            Wyloguj
+                        </a>
+                    {% else %}
+                    <a class="button is-primary">
+                        <strong>Utwórz konto</strong>
+                    </a>
+                    <a href="{% url 'login' %}" class="button is-light">
+                        Zaloguj
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>

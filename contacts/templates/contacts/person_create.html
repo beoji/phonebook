@@ -1,0 +1,190 @@
+{% extends 'index.html' %}
+
+{% load widget_tweaks %}
+
+{% block content %}
+
+<div class="columns is-centered">
+	<form class="column is-full-mobile is-half-tablet" method="post" novalidate>
+		{% csrf_token %}
+		{% for hidden_field in form.hidden_fields %}
+		{{ hidden_field }}
+		{% endfor %}
+
+		{% for error in form.non_field_errors %}
+		<p class="help is-danger">{{ error }}</p>
+		{% endfor %}
+
+		{% for field in form.visible_fields %}
+
+		<div class="field">
+			<label class="label">{{ field.label_tag }}</label>
+			{% for error in field.errors %}
+
+			<p class="help is-danger">{{ error }}</p>
+
+			{% endfor %}
+			<div class="control">
+				{% render_field field class="input" %}
+			</div>
+			{% if field.help_text %}
+			<p class="help">{{ field.help_text }}</p>
+			{% endif %}
+		</div>
+
+		{% endfor %}
+
+
+		{{ phone_formset.management_form }}
+
+		<div id="phone-formset">
+			{% for form in phone_formset.forms %}
+			<div class="individual-phone-form-{{ phone_formset.prefix }}">
+				{% for hidden_field in form.hidden_fields %}
+				{{ hidden_field }}
+				{% endfor %}
+
+				{% for error in form.non_field_errors %}
+				<p class="help is-danger">{{ error }}</p>
+				{% endfor %}
+
+				{% for field in form.visible_fields %}
+				<div class="field">
+					{% for error in field.errors %}
+					<p class="help is-danger">{{ error }}</p>
+					{% endfor %}
+					{% if field.field.widget.input_type == 'checkbox' %}
+					<label class="checkbox">
+						{% render_field field class="checkbox" %}
+						Usuń
+					</label>
+					{% else %}
+					<label class="label">{{ field.label_tag }}</label>
+					<div class="control">
+						{% render_field field class="input" %}
+					</div>
+					{% endif %}
+
+					{% if field.help_text %}
+					<p class="help">{{ field.help_text }}</p>
+					{% endif %}
+				</div>
+
+				{% endfor %}
+			</div>
+			{% endfor %}
+		</div>
+
+		<a id="add_more_phone" style="padding-bottom: 10px; display: block">Dodaj telefon</a>
+
+		<div id="empty-phone-form" style="display:none">
+			{% for field in phone_formset.empty_form.visible_fields %}
+			<div class="field">
+				{% if field.field.widget.input_type == 'checkbox' %}
+				<label class="checkbox">
+					{% render_field field class="checkbox" %}
+					Usuń
+				</label>
+				{% else %}
+				<label class="label">{{ field.label_tag }}</label>
+				<div class="control">
+					{% render_field field class="input" %}
+				</div>
+				{% endif %}
+			</div>
+			{% endfor %}
+		</div>
+
+
+		{{ email_formset.management_form }}
+
+		<div id="email-formset">
+			{% for form in email_formset.forms %}
+			<div class="individual-email-form-{{ email_formset.prefix }}">
+				{% for hidden_field in form.hidden_fields %}
+				{{ hidden_field }}
+				{% endfor %}
+
+				{% for error in form.non_field_errors %}
+				<p class="help is-danger">{{ error }}</p>
+				{% endfor %}
+
+				{% for field in form.visible_fields %}
+				<div class="field">
+					{% for error in field.errors %}
+					<p class="help is-danger">{{ error }}</p>
+					{% endfor %}
+					{% if field.field.widget.input_type == 'checkbox' %}
+					<label class="checkbox">
+						{% render_field field class="checkbox" %}
+						Usuń
+					</label>
+					{% else %}
+					<label class="label">{{ field.label_tag }}</label>
+					<div class="control">
+						{% render_field field class="input" %}
+					</div>
+					{% endif %}
+					{% if field.help_text %}
+					<p class="help">{{ field.help_text }}</p>
+					{% endif %}
+				</div>
+				{% endfor %}
+			</div>
+			{% endfor %}
+		</div>
+
+		<a id="add_more_email">Dodaj e-mail</a>
+		<div id="empty-email-form" style="display:none">
+			{% for field in email_formset.empty_form.visible_fields %}
+			<div class="field">
+				{% if field.field.widget.input_type == 'checkbox' %}
+				<label class="checkbox">
+					{% render_field field class="checkbox" %}
+					Usuń
+				</label>
+				{% else %}
+				<label class="label">{{ field.label_tag }}</label>
+				<div class="control">
+					{% render_field field class="input" %}
+				</div>
+				{% endif %}
+			</div>
+			{% endfor %}
+		</div>
+
+		<div class="field is-grouped submit-buttons">
+			<div class="control">
+				<button type="submit" class="button is-link">Zapisz</button>
+			</div>
+			<div class="control">
+				<a type="button" class="button is-link is-light" href="{% url 'person-list' %}">Anuluj</a>
+			</div>
+		</div>
+
+	</form>
+</div>
+
+{% endblock %}
+
+{% block script %}
+
+{{ block.super }}
+
+<script>
+
+	$('#add_more_email').click(function() {
+		var form_idx = $('#id_email_address-TOTAL_FORMS').val();
+		$('#email-formset').append($('#empty-email-form').html().replace(/__prefix__/g, form_idx));
+		$('#id_email_address-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+	});
+
+	$('#add_more_phone').click(function() {
+		var form_idx = $('#id_phone_number-TOTAL_FORMS').val();
+		$('#phone-formset').append($('#empty-phone-form').html().replace(/__prefix__/g, form_idx));
+		$('#id_phone_number-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+	});
+
+</script>
+
+{% endblock %}
